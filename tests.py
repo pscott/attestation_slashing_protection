@@ -30,12 +30,12 @@ assert(should_sign_attestation(attest_data, attestation_history)[0] == True), "v
 print("Ok ✅")
 
 attest_data = attestation_data(0, 7, "qlkj21")
-print("Surround multiple attestations vote")
+print("Surrounding multiple attestations")
 assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "surrounding lots of votes"
 print("Ok ✅")
 
 attest_data = attestation_data(4, 5, "qlkj21")
-print("Surround one vote")
+print("Surrounded by one vote")
 assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "getting surrounded by one vote"
 print("Ok ✅")
 
