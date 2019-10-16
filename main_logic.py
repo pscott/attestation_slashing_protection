@@ -1,6 +1,4 @@
-# THIS IS PSEUDO CODE AND NEEDS REVIEWING
-# attest_data the attestation data corresponding to the attestation we're evaluating
-# attestation_history is a vector of ValidatorHistoricalAttestation structs
+# CODE IS NOT FULLY OPTIMIZED YET
 
 def check_inner_attestations(attest_data, history_before_attest_target):
     inner_attestations = []
