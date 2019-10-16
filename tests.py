@@ -10,22 +10,34 @@ attestation_history = [
         ]
 
 attest_data = attestation_data(0, 1, "ewq231")
-assert(should_sign_attestation(attest_data, []) == True), "Empty history should be ok"
+print("Empty history test")
+assert(should_sign_attestation(attest_data, [])[0] == True), "Empty history should be ok"
+print("Ok ✅")
 
 attest_data = attestation_data(0, 1, "ewq231")
-assert(should_sign_attestation(attest_data, attestation_history) == True), "Same vote should be ok"
+print("Same vote test")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == True), "Same vote should be ok"
+print("Ok ✅")
 
 attest_data = attestation_data(0, 1, "ewqlkjw213")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "two attestations with same target epoch is a double vote"
+print("Double vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "two attestations with same target epoch is a double vote"
+print("Ok ✅")
 
 attest_data = attestation_data(3, 7, "qewqk132")
-assert(should_sign_attestation(attest_data, attestation_history) == True), "valid vote"
+print("Valid vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == True), "valid vote"
+print("Ok ✅")
 
 attest_data = attestation_data(0, 7, "qlkj21")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "surrounding lots of votes"
+print("Surround multiple attestations vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "surrounding lots of votes"
+print("Ok ✅")
 
 attest_data = attestation_data(4, 5, "qlkj21")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "getting surrounded by one vote"
+print("Surround one vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "getting surrounded by one vote"
+print("Ok ✅")
 
 attestation_history = [
         historical_attestation(0, 3, "eqwedsa"),
@@ -34,19 +46,29 @@ attestation_history = [
         ]
 
 attest_data = attestation_data(1, 4, "epoia")
-assert(should_sign_attestation(attest_data, attestation_history) == True), "valid interlaced vote"
+print("Valid interlaced vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == True), "valid interlaced vote"
+print("Ok ✅")
 
 attest_data = attestation_data(1, 5, "epoia")
-assert(should_sign_attestation(attest_data, attestation_history) == True), "valid interlaced vote"
+print("Valid interlaced vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == True), "valid interlaced vote"
+print("Ok ✅")
 
 attest_data = attestation_data(1, 6, "epoia")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "double vote"
+print("Double vote")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "double vote"
+print("Ok ✅")
 
 attest_data = attestation_data(5, 5, "epoia")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "invalid data"
+print("Target equal to source")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "invalid data"
+print("Ok ✅")
 
 attest_data = attestation_data(6, 5, "epoia")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "invalid data"
+print("Target smaller than source")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "invalid data"
+print("Ok ✅")
 
 attestation_history = [
         historical_attestation(3, 6, "qelkj1"),
@@ -54,4 +76,6 @@ attestation_history = [
         ]
 
 attest_data = attestation_data(0, 3, "epoia")
-assert(should_sign_attestation(attest_data, attestation_history) == False), "bad pruning"
+print("Pruned history")
+assert(should_sign_attestation(attest_data, attestation_history)[0] == False), "bad pruning"
+print("Ok ✅")

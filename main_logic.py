@@ -28,8 +28,7 @@ def check_attest_validity(attest_data):
 
 def should_sign_attestation(attest_data, attestation_history):
     if not check_attest_validity(attest_data):
-        print("invalid data!")
-        return False
+        return (False, "invalid attestation_data")
     target_in_history = False
     target_index = len(attestation_history) - 1
     for (index, prev_attest) in enumerate(attestation_history[::-1]):
@@ -40,35 +39,26 @@ def should_sign_attestation(attest_data, attestation_history):
     if not target_in_history:
         if len(attestation_history) == 0:
             # history is empty
-            print("history is empty")
-            return True
+            return (True, "empty history")
         else:
             # pruning error in DB?
-            print("pruning error?")
-            return False
+            return (False, "pruning error")
     corresponding_data = attestation_history[target_index]
-    # to_bytes is probably wrong here but the goal is just to compare hashes
     # this condition is not checked earlier because it shouldn't happen often in practice
     if corresponding_data.preimage_hash == attest_data.hash256:
         # it's the same vote
-        print("same vote")
-        return True
+        return (True, "same vote")
     elif corresponding_data.target_epoch == attest_data.target.epoch:
         # double vote! SLASHABLE!
-        print("double vote")
-        return False
+        return (False, "double vote")
     else:
         # check that we're not surrounding any vote
         if check_inner_attestations(attest_data, attestation_history[target_index::-1]) == False:
-            print("surrounding")
-            return False
+            return (False, "surrounding vote")
         # check that we're not inserting a surrounded vote
         if target_index == len(attestation_history) - 1:
             # the attestation_data target epoch is bigger than any target in history: we're not inserting a surrounded vote
-            print("target is higher")
-            return True
+            return (True, "target is higher than highest target in history")
         if check_outer_attestations(attest_data, attestation_history[target_index + 1::]) == False:
-            print("surrounded")
-            return False
-    print("all ok")
-    return True
+            return (False, "surrounded vote")
+    return (True, "attestion is valid")
