@@ -1,7 +1,5 @@
 def check_attest_validity(attest_data):
-    if attest_data.target.epoch <= attest_data.source.epoch:
-        return False
-    return True
+    return attest_data.target.epoch > attest_data.source.epoch
 
 def should_sign_attestation(attest_data, attestation_history):
     if not check_attest_validity(attest_data):

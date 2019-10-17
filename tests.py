@@ -14,6 +14,12 @@ print("Empty history test")
 assert(should_sign_attestation(attest_data, [])[0] == True), "Empty history should be ok"
 print("Ok ✅")
 
+attest_data = attestation_data(0, 5, "213lkjqw")
+print("Surround vote from genesis")
+result = should_sign_attestation(attest_data, attestation_history)
+assert(result[0] == False and result[1] == "surrounding vote"), "Surrounding vote with source from genesis"
+print("Ok ✅")
+
 attest_data = attestation_data(0, 1, "ewq231")
 print("Same vote test")
 assert(should_sign_attestation(attest_data, attestation_history)[0] == True), "Same vote should be ok"
