@@ -23,3 +23,9 @@ class historical_attestation:
         self.source_epoch = source_epoch
         self.target_epoch = target_epoch
         self.preimage_hash = hash256
+    
+    def print(self):
+        print("Source_epoch: ", self.source_epoch)
+        print("Target_epoch: ", self.target_epoch)
+        print("Hash:         ", self.preimage_hash)
+
