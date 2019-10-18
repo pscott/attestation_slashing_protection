@@ -155,7 +155,7 @@ fn should_sign_attestation(
                     ));
                 }
             }
-            Some(index) => attestation_history.len() - index,
+            Some(index) => target_index - index + 1
         };
 
     check_surrounding(
@@ -300,6 +300,38 @@ mod tests {
             Err(AttestationError::Surrounded)
         );
     }
+
+    #[test]
+    fn invalid_surrounding_last_vote() {
+        let mut history = vec![];
+        history.push(ValidatorHistoricalAttestation::new(0, 1, "lkj12"));
+        history.push(ValidatorHistoricalAttestation::new(0, 2, "mn21"));
+        history.push(ValidatorHistoricalAttestation::new(2, 3, "mn21"));
+        history.push(ValidatorHistoricalAttestation::new(4, 9, "sahjk8"));
+        history.push(ValidatorHistoricalAttestation::new(5, 10, "asjk"));
+        history.push(ValidatorHistoricalAttestation::new(6, 11, "lkj21"));
+
+        let attestation_data = AttestationData::new(1, 8, "tutu");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::Surrounding)
+        );
+    }
+
+    #[test]
+    fn invalid_surrounding_first_vote() {
+        let mut history = vec![];
+        history.push(ValidatorHistoricalAttestation::new(0, 1, "lkj12"));
+        history.push(ValidatorHistoricalAttestation::new(0, 2, "lkj12"));
+        history.push(ValidatorHistoricalAttestation::new(2, 3, "mn21"));
+
+        let attestation_data = AttestationData::new(1, 4, "tutu");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::Surrounding)
+        );
+    }
+
 
     #[test]
     fn valid_complex_test() {
