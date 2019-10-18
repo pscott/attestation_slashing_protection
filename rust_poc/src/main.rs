@@ -155,7 +155,7 @@ fn should_sign_attestation(
                     ));
                 }
             }
-            Some(index) => target_index - index + 1
+            Some(index) => target_index - index + 1,
         };
 
     check_surrounding(
@@ -326,76 +326,6 @@ mod tests {
         history.push(ValidatorHistoricalAttestation::new(2, 3, "mn21"));
 
         let attestation_data = AttestationData::new(1, 4, "tutu");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::Surrounding)
-        );
-    }
-
-
-    #[test]
-    fn valid_complex_test() {
-        let mut history = vec![];
-
-        let attestation_data = AttestationData::new(0, 0, "mb987");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::InvalidAttestationData {
-                source: attestation_data.source.clone(),
-                target: attestation_data.target.clone(),
-            })
-        );
-
-        let attestation_data = AttestationData::new(1, 0, "lkj09");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::InvalidAttestationData {
-                source: attestation_data.source.clone(),
-                target: attestation_data.target.clone(),
-            })
-        );
-
-        let attestation_data = AttestationData::new(0, 1, "iuy76");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Ok(ValidAttestation::EmptyHistory)
-        );
-
-        history.push(ValidatorHistoricalAttestation::new(0, 1, "lkj12"));
-        let attestation_data = AttestationData::new(0, 1, "tutu");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::DoubleVote)
-        );
-
-        let attestation_data = AttestationData::new(0, 1, "lkj12");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Ok(ValidAttestation::SameVote)
-        );
-
-        let attestation_data = AttestationData::new(4, 5, "12lkj");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Ok(ValidAttestation::ValidAttestation)
-        );
-
-        history.push(ValidatorHistoricalAttestation::new(1, 2, "sdpi0"));
-        let attestation_data = AttestationData::new(0, 3, "lkjdas90");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::Surrounding)
-        );
-
-        history.push(ValidatorHistoricalAttestation::new(1, 2, "lkj12"));
-        let attestation_data = AttestationData::new(0, 3, "09sa");
-        assert_eq!(
-            should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::Surrounding)
-        );
-
-        history.push(ValidatorHistoricalAttestation::new(2, 8, "lkj12"));
-        let attestation_data = AttestationData::new(0, 3, "09sa");
         assert_eq!(
             should_sign_attestation(&attestation_data, &history[..]),
             Err(AttestationError::Surrounding)
