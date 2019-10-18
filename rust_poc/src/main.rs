@@ -320,6 +320,34 @@ mod tests {
     }
 
     #[test]
+    fn invalid_prunning_error_target_too_small() {
+        let mut history = vec![];
+        history.push(ValidatorHistoricalAttestation::new(221, 224, "lkj12"));
+
+        let attestation_data = AttestationData::new(4, 5, "hello");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::PruningError(
+                PruningError::TargetEpochTooSmall(5)
+            ))
+        );
+    }
+
+    #[test]
+    fn invalid_prunning_error_source_too_small() {
+        let mut history = vec![];
+        history.push(ValidatorHistoricalAttestation::new(221, 224, "lkj12"));
+
+        let attestation_data = AttestationData::new(4, 227, "hello");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::PruningError(
+                PruningError::SourceEpochTooSmall(4)
+            ))
+        );
+    }
+
+    #[test]
     fn invalid_surrounding_first_vote() {
         let mut history = vec![];
         history.push(ValidatorHistoricalAttestation::new(0, 1, "lkj12"));
