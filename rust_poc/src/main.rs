@@ -1,26 +1,26 @@
 #[derive(PartialEq, Default, Debug, Clone)]
-pub struct Crosslink {
+pub struct Checkpoint {
     epoch: u64,
 }
 
-impl Crosslink {
+impl Checkpoint {
     fn new(epoch: u64) -> Self {
-        Crosslink { epoch }
+        Checkpoint { epoch }
     }
 }
 
 #[derive(Default, Debug)]
 pub struct AttestationData {
-    source: Crosslink,
-    target: Crosslink,
+    source: Checkpoint,
+    target: Checkpoint,
     hash256: String,
 }
 
 impl AttestationData {
     fn new(source_epoch: u64, target_epoch: u64, preimage_hash: &str) -> Self {
         AttestationData {
-            source: Crosslink::new(source_epoch),
-            target: Crosslink::new(target_epoch),
+            source: Checkpoint::new(source_epoch),
+            target: Checkpoint::new(target_epoch),
             hash256: String::from(preimage_hash),
         }
     }
@@ -53,8 +53,8 @@ pub enum PruningError {
 pub enum AttestationError {
     DoubleVote,
     InvalidAttestationData {
-        source: Crosslink,
-        target: Crosslink,
+        source: Checkpoint,
+        target: Checkpoint,
     },
     PruningError(PruningError),
     Surrounded,
