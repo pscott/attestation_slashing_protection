@@ -127,9 +127,8 @@ fn should_sign_attestation(
                 PruningError::TargetEpochTooSmall(attestation_data.target.epoch),
             ))
         }
-        Some(index) => index,
+        Some(index) => attestation_history.len() - index - 1,
     };
-    let target_index = attestation_history.len() - target_index - 1;
 
     check_surrounded(attestation_data, &attestation_history[target_index + 1..])?;
     if attestation_history[target_index].target_epoch == attestation_data.target.epoch {
@@ -149,15 +148,16 @@ fn should_sign_attestation(
             }) {
             None => {
                 if attestation_data.source.epoch == 0 {
-                    target_index - 1 // double check
+                    0 // double check
                 } else {
                     return Err(AttestationError::PruningError(
                         PruningError::SourceEpochTooSmall(attestation_data.source.epoch),
                     ));
                 }
             }
-            Some(index) => index,
+            Some(index) => attestation_history.len() - index,
         };
+
     check_surrounding(
         attestation_data,
         &attestation_history[source_index..=target_index],
@@ -174,7 +174,7 @@ mod tests {
     fn valid_simple_test() {
         let mut history = vec![];
         history.push(ValidatorHistoricalAttestation::new(0, 1, "adsl12"));
-        history.push(ValidatorHistoricalAttestation::new(1, 2, "e21a"));
+        history.push(ValidatorHistoricalAttestation::new(1, 2, "231k"));
 
         let attestation_data = AttestationData::new(2, 3, "wqpoi2109");
         assert_eq!(
@@ -305,7 +305,7 @@ mod tests {
     fn valid_complex_test() {
         let mut history = vec![];
 
-        let attestation_data = AttestationData::new(0, 0, "tutu");
+        let attestation_data = AttestationData::new(0, 0, "mb987");
         assert_eq!(
             should_sign_attestation(&attestation_data, &history[..]),
             Err(AttestationError::InvalidAttestationData {
@@ -314,7 +314,7 @@ mod tests {
             })
         );
 
-        let attestation_data = AttestationData::new(1, 0, "tutu");
+        let attestation_data = AttestationData::new(1, 0, "lkj09");
         assert_eq!(
             should_sign_attestation(&attestation_data, &history[..]),
             Err(AttestationError::InvalidAttestationData {
@@ -323,7 +323,7 @@ mod tests {
             })
         );
 
-        let attestation_data = AttestationData::new(0, 1, "tutu");
+        let attestation_data = AttestationData::new(0, 1, "iuy76");
         assert_eq!(
             should_sign_attestation(&attestation_data, &history[..]),
             Ok(ValidAttestation::EmptyHistory)
@@ -342,12 +342,31 @@ mod tests {
             Ok(ValidAttestation::SameVote)
         );
 
-        let attestation_data = AttestationData::new(4, 5, "tutu");
+        let attestation_data = AttestationData::new(4, 5, "12lkj");
         assert_eq!(
             should_sign_attestation(&attestation_data, &history[..]),
-            Err(AttestationError::PruningError(
-                PruningError::TargetEpochTooSmall(1)
-            ))
+            Ok(ValidAttestation::ValidAttestation)
+        );
+
+        history.push(ValidatorHistoricalAttestation::new(1, 2, "sdpi0"));
+        let attestation_data = AttestationData::new(0, 3, "lkjdas90");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::Surrounding)
+        );
+
+        history.push(ValidatorHistoricalAttestation::new(1, 2, "lkj12"));
+        let attestation_data = AttestationData::new(0, 3, "09sa");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::Surrounding)
+        );
+
+        history.push(ValidatorHistoricalAttestation::new(2, 8, "lkj12"));
+        let attestation_data = AttestationData::new(0, 3, "09sa");
+        assert_eq!(
+            should_sign_attestation(&attestation_data, &history[..]),
+            Err(AttestationError::Surrounding)
         );
     }
 }
