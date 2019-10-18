@@ -195,7 +195,7 @@ mod tests {
     }
 
     #[test]
-    fn valid_casting_same_vote() {
+    fn valid_cast_same_vote() {
         let mut history = vec![];
         history.push(ValidatorHistoricalAttestation::new(0, 1, "adsl12"));
         history.push(ValidatorHistoricalAttestation::new(1, 2, "e21a"));
@@ -253,8 +253,9 @@ mod tests {
         history.push(ValidatorHistoricalAttestation::new(0, 1, "adsl12"));
         history.push(ValidatorHistoricalAttestation::new(1, 2, "e21a"));
         history.push(ValidatorHistoricalAttestation::new(2, 3, "21ou09"));
+        history.push(ValidatorHistoricalAttestation::new(3, 4, "21ou09"));
 
-        let attestation_data = AttestationData::new(1, 4, "2019a");
+        let attestation_data = AttestationData::new(1, 5, "2019a");
         assert_eq!(
             should_sign_attestation(&attestation_data, &history[..]),
             Err(AttestationError::Surrounding)
