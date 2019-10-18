@@ -3,9 +3,9 @@ Small PoC to protect a validator client from signing slashable attestations. Ple
 
 ## Algorithm
 Here's the idea:
-  1. Find the first target epoch that is smaller or equal to the attestation target epoch. If it is equal, check that their hashes are the same, else return false.
-  2. Then, check that we are not surrounding any previous attestations by creating a list that contains every historical_attestation that has a target_epoch that is between current_attestation.source.epoch and current_attestation.target.epoch, and checking that no element in this list has a source_epoch that is higher than current_attestaion.target.epoch
-  3. Then, check that we are not inserting a surrounded attestation by creating another list that contains all historical_attestations that have a target higher than the curr_attestation.target.epoch and checking that no element in this list has a source_epoch that is smaller than the current_attestation.source.epoch.
+  1. For every target epoch higher than the attestation target epoch, check that the corresponding source epoch is higher than the attestation source epoch (checking that the attestation is not surrounded by any previous vote).
+  2. If the attestation target epoch is already in the historical attestation list, check that they have the same hash (checking for double votes).
+  3. For every target epoch between the attestation source epoch and the attestation target epoch, check that the corresponding source epoch is smaller than the new attestation source epoch (checking we're not surrounding any previous votes).
 
 
 By taking advantage of the fact that the attestation_history is already sorted, this algorithm should be near instantaneous in almost all normal cases. The complexity is a linear function of the number of target epochs in the attestation_history that are bigger than the `current_attestation.source.epoch`.
