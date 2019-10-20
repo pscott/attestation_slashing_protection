@@ -148,7 +148,8 @@ fn should_sign_attestation(
             }) {
             None => {
                 if attestation_data.source.epoch == 0 {
-                    0 // double check
+                    // Special case for genesis
+                    0
                 } else {
                     return Err(AttestationError::PruningError(
                         PruningError::SourceEpochTooSmall(attestation_data.source.epoch),
