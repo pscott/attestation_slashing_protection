@@ -16,7 +16,7 @@ Here's a gif to visualize it better:
 
 ## Running tests
 There are two PoC in this repo. The first is a Rust version and the second a Python version.
-The Python version needs revision, and tests are lousy.
+The **Python version needs revision**, please look at the Rust one.
 To run Rust tests:
 
 `cd rust_poc; cargo test`
