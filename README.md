@@ -1,5 +1,5 @@
 # attestation_slashing_protection
-Small PoC to protect a validator client from signing slashable attestations. Please read https://hackmd.io/u8MTIe5IRmybzVz38-sGdQ for more context.
+Small PoC to protect a validator client from signing slashable attestations. Please read [this hackmd](https://hackmd.io/u8MTIe5IRmybzVz38-sGdQ) for more context.
 
 ## Algorithm
 Here's the idea:
